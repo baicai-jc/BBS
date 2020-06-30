@@ -1,0 +1,21 @@
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <form id="myform">    <!--我们不用form表单提交数据 只是单纯用一下form标签而已-->
+            {% for form in form_obj %}
+                <div class="from-group">
+                    <!--form.auto_id获取forms渲染的input框的id-->
+                    <label for="{{ form.auto_id }}">{{ form.label }}</label>
+                    {{ form }}
+                    <span style="color: red" class="pull-right"></span>
+                </div>
+            {% endfor %}
+            <div class="form-group" style="margin-top: 10px">
+                <label for="myfile">头像
+                    {% load static %}
+                    <img src="{% static "img/default.png" %}" alt="" id="myimg" width="100px" style="margin-left: 10px">
+                </label>
+                <input type="file" id="myfile" name="avatar" style="display: none">
+            </div>
+        </form>
+    </div>
+</div>

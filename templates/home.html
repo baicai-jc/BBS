@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- Bootstrap3 核心 CSS 文件 -->
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <!-- Bootstrap3 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- font-awesome.min.css图标库4.7版本 -->
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/sweetalert/1.0.1/sweetalert.min.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/sweetalert/1.0.1/sweetalert.min.js"></script>
+    {% load static %}
+    <style>
+        #id_edit,
+        #id_edit_close{
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">BBS</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">博客 <span class="sr-only">(current)</span></a></li>
+        <li><a href="#">文章</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">更多 <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">One more separated link</a></li>
+          </ul>
+        </li>
+      </ul>
+      <form class="navbar-form navbar-left">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+      <ul class="nav navbar-nav navbar-right">
+          {% if request.user.is_authenticated %}
+              <li><a href="#">{{ request.user.username }}</a></li>
+              <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">更多操作 <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="#" data-toggle="modal" data-target=".bs-example-modal-lg">修改密码</a></li>
+                    <li><a href="{% url 'set_avatar' %}">修改头像</a></li>
+                    <li><a href="{% url "backend" %}">后台管理</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url "logout" %}">退出登录</a></li>
+                  </ul>
+                  <!-- Large modal -->
+                  <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+                      <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <h1 class="text-center">修改密码</h1>
+                            <div class="row">
+                                <div class="col-md-8 col-md-offset-2">
+                                    <div class="formgroup">
+                                        <label for="">用户名</label>
+                                        <input type="text" value="{{ request.user.username }}" class="form-control" disabled>
+                                    </div>
+                                    <div class="formgroup">
+                                        <label for="id_old_password">旧密码</label>
+                                        <input type="password" id="id_old_password" class="form-control">
+                                    </div>
+                                    <div class="formgroup">
+                                        <label for="id_new_password">新密码</label>
+                                        <input type="password" id="id_new_password" class="form-control">
+                                    </div>
+                                    <div class="formgroup">
+                                        <label for="">确认密码</label>
+                                        <input type="password" id="id_confirm_password" class="form-control">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal" id="id_edit_close">取消</button>
+                                        <button class="btn btn-primary" id="id_edit">修改</button>
+                                        <span style="color: red;font: bold 16px 微软雅黑" id="password_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                  </div>
+              </li>
+          {% else %}
+{#              <li><a href="{% url "register" %}">注册</a></li>#}
+              <li>
+                  <a href="#" data-toggle="modal" data-target="#myRegModal">注册</a>
+                  <!-- Button trigger modal -->
+                  <!-- Modal -->
+                  <div class="modal fade" id="myRegModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                          <h4 class="modal-title text-center" id="myModalLabel">注册界面</h4>
+                        </div>
+                        <div class="modal-body">
+                          {% include 'register_tmp.html' with form_obj=form_obj %}
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                          <button type="button" class="btn btn-primary" id="register_btn">注册</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </li>
+              <li><a href="{% url "login" %}">登录</a></li>
+          {% endif %}
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">重金求子</h3>
+              </div>
+              <div class="panel-body">
+                事成之后，上海别墅一套
+              </div>
+            </div>
+            <div class="panel panel-danger">
+              <div class="panel-heading">
+                <h3 class="panel-title">千万大奖</h3>
+              </div>
+              <div class="panel-body">
+                事成之后，上海别墅一套
+              </div>
+            </div>
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <h3 class="panel-title">重金求子</h3>
+              </div>
+              <div class="panel-body">
+                事成之后，上海别墅一套
+              </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            {% for article_obj in article_queryset %}
+                <ul class="media-list">
+                    <li class="media">
+                        <h4 class="media-heading"><a href="/{{ article_obj.blog.userinfo.username }}/article/{{ article_obj.pk }}">{{ article_obj.title }}</a></h4>
+                        <div class="media-left">
+                          <a href="#">
+                            <img class="media-object" src="/files/{{ article_obj.blog.userinfo.avatar }}" alt="..." width="80px">
+                          </a>
+                        </div>
+                        <div class="media-body">
+                          {{ article_obj.desc }}
+                        </div>
+                        <br>
+{#                        BM老李 发布于 2020-06-11 18:43 评论(0)阅读(27)#}
+                        <div>
+                            <span><a href="/{{ article_obj.blog.userinfo.username }}/">{{ article_obj.blog.userinfo.username }}&nbsp;&nbsp;</a></span>
+                            <span>发布于&nbsp;&nbsp;</span>
+                            <span>{{ article_obj.create_time|date:"Y-m-d" }}&nbsp;&nbsp;</span>
+                            <span>评论<i class="fa fa-comment-o" aria-hidden="true"></i>({{ article_obj.comment_num }})&nbsp;&nbsp;</span>
+                            <span>点赞<i class="fa fa-thumbs-o-up" aria-hidden="true"></i>({{ article_obj.up_num }})&nbsp;&nbsp;</span>
+                        </div>
+                    </li>
+                </ul>
+                <hr>
+            {% endfor %}
+        </div>
+        <div class="col-md-2">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">重金求子</h3>
+              </div>
+              <div class="panel-body">
+                事成之后，上海别墅一套
+              </div>
+            </div>
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">重金求子</h3>
+              </div>
+              <div class="panel-body">
+                事成之后，上海别墅一套
+              </div>
+            </div>
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">重金求子</h3>
+              </div>
+              <div class="panel-body">
+                事成之后，上海别墅一套
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static "js/mysteup.js" %}/"></script>
+<script>
+    $("#id_edit").click(function () {
+        $.ajax({
+            url: '/set_password/',
+            type: 'post',
+            dataType: 'json',
+            data: {
+                "old_password": $("#id_old_password").val(),
+                "new_password": $("#id_new_password").val(),
+                "confirm_password": $("#id_confirm_password").val(),
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function (args) {
+                if (args.code == 1000){
+                    window.location.reload()
+                }else{
+                    $("#password_error").text(args.msg)
+                }
+            }
+        })
+    })
+    // 注册
+    // 选择头像实时显示
+    $("#myfile").change(function () {
+        // 文件阅读器对象
+        // 1、先生成一个文件阅读器对象
+        let myFileReaderObj = new FileReader();
+        // 2、获取用户上传的头像文件
+        let fileObj = $(this)[0].files[0];
+        // 3、将文件对象交给阅读器对象读取
+        myFileReaderObj.readAsDataURL(fileObj);     // 这步操作是异步
+        // 4、利用文件阅读器将文件展示到前端页面   修改img的src属性
+        // 等待myFileReaderObj文件阅读器加载完毕之后再执行
+        myFileReaderObj.onload = function(){
+            $("#myimg").attr("src",myFileReaderObj.result)
+        }
+    });
+    $("#register_btn").click(function () {
+        // 发送ajax请求  我们发送的数据中即包含普通键值也包含文件
+        let formDataObj = new FormData();
+        // 添加普通键值对
+        // console.log($("#myform").serializeArray())  // [{},{},{},...] 只包含普通键值对
+        $.each($("#myform").serializeArray(),function (index,obj) {
+            // console.log(index,obj)   // obj = {}
+            formDataObj.append(obj.name,obj.value)
+        });
+        // 添加文件
+        formDataObj.append('avatar',$("#myfile")[0].files[0]);
+        // 发送ajax请求
+        $.ajax({
+            url: '{% url "register" %}',
+            type: 'post',
+            dataType: 'json',
+            data: formDataObj,
+
+            contentType: false,
+            processData: false,
+            success: function (args) {
+                if (args.code == 1000){
+                    $('#myRegModal').modal('hide');
+                    swal("Success！", "账号注册成功", "success");
+                }else{
+                    // 如何将对应的错误信息提示展示到对应的input框下面,因为用的ajax所以无法像之前在span标签里面写form.errors.0
+                    // forms组件渲染的标签的id值都是 id_字段名
+                    $.each(args.msg,function (index,obj) {
+                        {#console.log(index,obj)  //  username        ["用户名不能为空"]#}
+                        let targetId = '#id_' + index;      // input标签
+                        {#$(targetId).next().text(obj[0]).parent().addClass('has-error')#}
+                        $(targetId).next().text(obj[0]).prev().css("border","solid red")
+                    })
+                }
+            }
+        })
+    })
+    // 给所有的input框绑定获取焦点事件
+    $('input').focus(function () {
+        // 将input下面的span标签和input外面的div标签修改内容及属性
+        $(this).next().text('').prev().removeAttr("style","");
+    })
+</script>
+</body>
+</html>
